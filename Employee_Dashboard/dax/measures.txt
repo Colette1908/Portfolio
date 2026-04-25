@@ -1,0 +1,69 @@
+Average Salary = AVERAGE(employee_data[Salary])
+
+Avg Hours = AVERAGE(employee_data[HoursWorked])
+
+Below Target = 
+CALCULATE(
+COUNTROWS(employee_data),
+employee_data[HoursWorked] < 7
+)
+
+Dashboard Title = 
+"Workforce Dashboard - " &
+SELECTEDVALUE(employee_data[Department], "All Departments")
+
+Highest Hours = MAX(employee_data[HoursWorked])
+
+Invalid Emails = CALCULATE(COUNTROWS(employee_data), employee_data[Email_Clean] = "Invalid")
+
+Leave = CALCULATE(COUNTROWS(employee_data), NOT(ISBLANK(employee_data[LeaveType])))
+
+Lowest Hours = MIN(employee_data[HoursWorked])
+
+Salary Color = 
+IF([Average Salary] >= 30000, "#2E7D32", "#6B7280")
+
+Title Employee Dashboard = 
+"Employee Performance Dashboard - " &
+SELECTEDVALUE(employee_data[Department], "All Departments")
+
+Top Department = 
+TOPN(
+1,
+VALUES(employee_data[Department]),
+[Total Hours]
+)
+
+Total Employees = DISTINCTCOUNT(employee_data[EmployeeID])
+
+Total Hours = SUM(employee_data[HoursWorked])
+
+Calendar = CALENDAR(MIN(employee_data[Date]), MAX(employee_data[Date].[Date]))
+
+Hours Color = 
+SWITCH(
+    TRUE(),
+    [Total Hours] >= 450, "#2E7D32",
+    [Total Hours] >= 400, "#1E88E5",
+    "#D32F2F"
+)
+
+Invalid Email Color = 
+SWITCH(
+    TRUE(),
+    [Invalid Emails] = 0, "#2E7D32",
+    [Invalid Emails] <= 3, "#F59E0B",
+    "#D32F2F"
+)
+
+Leave Color = 
+SWITCH(
+    TRUE(),
+    [Leave] <= 2, "#2E7D32",
+    [Leave] <= 5, "#F59E0B",
+    "#D32F2F"
+)
+
+Month = FORMAT('Calendar'[Date], "MMMM")
+
+Month Number = MONTH('Calendar'[Date])
