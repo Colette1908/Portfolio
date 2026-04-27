@@ -1,0 +1,217 @@
+Calendar = 
+CALENDAR(
+    MIN(Sales[OrderDate]),
+    MAX(Sales[OrderDate])
+)
+
+Month = FORMAT(Calendar[Date], "MMMM")
+
+Month Number = MONTH(Calendar[Date])
+
+Year = YEAR(Calendar[Date])
+
+Avg Order Value = 
+DIVIDE([Total Revenue], [Orders])
+
+Best Product = 
+MAXX(
+TOPN(
+1,
+VALUES(Sales[Product]),
+[Total Profit],
+DESC
+),
+Sales[Product]
+)
+
+Best Region = 
+MAXX(
+TOPN(
+1,
+VALUES(Sales[Region]),
+[Total Revenue],
+DESC
+),
+Sales[Region]
+)
+
+
+Best Region Product = 
+VAR T =
+TOPN(
+    1,
+    SUMMARIZE(
+        Sales,
+        Sales[Region],
+        "Rev", SUM(Sales[Revenue])
+    ),
+    [Rev],
+    DESC
+)
+RETURN
+MAXX(T, Sales[Region])
+
+Best Salesperson = 
+MAXX(
+TOPN(
+1,
+VALUES(Sales[Salesperson]),
+[Total Revenue],
+DESC
+),
+Sales[Salesperson]
+)
+
+Customer Avg Order = 
+DIVIDE(
+    [Customer Revenue],
+    [Customer Orders]
+)
+
+Customer Margin % = 
+DIVIDE(
+    [Customer Profit],
+    [Customer Revenue]
+)
+
+Customer Orders = 
+DISTINCTCOUNT(Sales[OrderID])
+
+Customer Profit = 
+SUM(Sales[Profit])
+
+Customer Revenue = 
+SUM(Sales[Revenue])
+
+Customer Tooltip Title = 
+SELECTEDVALUE(Sales[CustomerName], "Customer") & " Summary"
+
+Customer Top Product = 
+VAR T =
+TOPN(
+    1,
+    SUMMARIZE(
+        Sales,
+        Sales[Product],
+        "Rev", SUM(Sales[Revenue])
+    ),
+    [Rev],
+    DESC
+)
+RETURN
+MAXX(T, Sales[Product])
+
+Dashboard Subtitle = 
+VAR SelectedRegion =
+    SELECTEDVALUE(Sales[Region], "All Regions")
+
+VAR SelectedCategory =
+    SELECTEDVALUE(Sales[Category], "All Categories")
+
+VAR SelectedMonth =
+    SELECTEDVALUE(sales[OrderDate].[Month], "All Months")
+
+RETURN
+SelectedRegion & " | " &
+SelectedCategory & " | " &
+SelectedMonth
+
+Date Range = 
+MIN(Sales[OrderDate]) & " - " & MAX(Sales[OrderDate])
+
+Growth % = 0.08
+
+Growth Display = 
+IF(
+    [Growth %] > 0,
+    "▲ " & FORMAT([Growth %], "0.0%"),
+    "▼ " & FORMAT([Growth %], "0.0%")
+)
+
+Lowest Salesperson = 
+MAXX(
+TOPN(
+1,
+VALUES(Sales[Salesperson]),
+[Total Revenue],
+ASC
+),
+Sales[Salesperson]
+)
+
+Margin Text = FORMAT([Tooltip Margin %], "0.0%")
+
+Orders = DISTINCTCOUNT(Sales[OrderID])
+
+Orders Text = FORMAT([Tooltip Orders], "# ##0")
+
+Product Margin % = 
+DIVIDE(
+    [Product Profit],
+    [Product Revenue]
+)
+
+Product Orders = 
+DISTINCTCOUNT(Sales[OrderID])
+
+Product Profit = 
+SUM(Sales[Profit])
+
+Product Qty = 
+SUM(Sales[Quantity])
+
+Product Revenue = 
+SUM(Sales[Revenue])
+
+Product Tooltip Title = 
+SELECTEDVALUE(Sales[Product], "Product") & " Performance"
+
+Profit Margin % = 
+DIVIDE([Total Profit], [Total Revenue])
+
+Profit Text = "R" & FORMAT([Tooltip Profit], "# ##0")
+
+Revenue Display = "R " & FORMAT([Total Revenue], "# ##0.00")
+
+Revenue Previous Month = 
+CALCULATE(
+    [Total Revenue],
+    PREVIOUSMONTH(Calendar[Date])
+)
+
+Revenue Text = "R" & FORMAT([Tooltip Revenue], "# ##0")
+
+Tooltip Margin % = 
+DIVIDE(
+    [Tooltip Profit],
+    [Tooltip Revenue]
+)
+
+Tooltip Orders = 
+DISTINCTCOUNT(Sales[OrderID])
+
+Tooltip Profit = 
+SUM(Sales[Profit])
+
+Tooltip Revenue = 
+SUM(Sales[Revenue])
+
+Tooltip Title = 
+SELECTEDVALUE(Sales[Region], "Region") & " Performance"
+
+Tooltip Top Product = 
+MAXX(
+    TOPN(
+        1,
+        VALUES(Sales[Product]),
+        [Tooltip Revenue],
+        DESC
+    ),
+    Sales[Product]
+)
+
+Top Product Text = [Tooltip Top Product]
+
+Total Profit = SUM(Sales[Profit])
+
+Total Revenue = SUM(Sales[Revenue])
